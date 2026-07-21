@@ -1,4 +1,4 @@
-let container = document.getElementById('product-detail-container');
+
 
 
 window.onload = function(){
@@ -7,7 +7,7 @@ window.onload = function(){
         window.location.href = 'index.html';
         return;
     }
-};
+
 
 const darkMode = localStorage.getItem('darkMode');
 
@@ -26,6 +26,8 @@ if(logoutBtn){
     });
 }
 
+loadProduct();
+};
 //تعریف مجدد محصولات
 const products= [
      {
@@ -221,6 +223,52 @@ function addToCart(id){
 
     alert('محصول با موفقیت به سبد خرید اضافه شد.')
   
+}
+
+function loadProduct(){
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = Number(urlParams.get('id'));
+
+    const container = document.getElementById('product-detail-container');
+
+    if (!productId) {
+        container.innerHTML = "<h2>محصولی انتخاب نشده است.</h2>";
+        return;
+    }
+
+    const product = products.find(p => p.id === productId);
+
+    if (!product) {
+        container.innerHTML = "<h2>محصول پیدا نشد.</h2>";
+        return;
+    }
+
+    container.innerHTML = `
+        <img src="${product.image}" class="product-detail-image">
+
+        <h2>${product.title}</h2>
+
+        <p><strong>نویسنده:</strong> ${product.author}</p>
+
+        <p>${product.description}</p>
+
+        ${
+            product.discountPrice ?
+            `
+            <p class="old-price">${product.price.toLocaleString()} تومان</p>
+            <p class="discount-price">${product.discountPrice.toLocaleString()} تومان</p>
+            `
+            :
+            `
+            <p class="price">${product.price.toLocaleString()} تومان</p>
+            `
+        }
+
+        <button onclick="addToCart(${product.id})" class="btn">
+            افزودن به سبد خرید
+        </button>
+    `;
 }
 
 
